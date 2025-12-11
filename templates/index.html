@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>QR Code Generator</title>
+    <style>
+        body {
+            font-family: Arial;
+            text-align: center;
+            margin-top: 50px;
+        }
+
+        input {
+            padding: 10px;
+            width: 400px;
+            font-size: 16px;
+        }
+
+        #preview-are {
+            margin-top: 30px;
+        }
+
+        #qr-preview {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>QR Code Generator</h1>
+    <input type="text" id="qrInput" placeholder="Enter text or URL.." onkeyup="updateQR()">
+    <div id="preview-area">
+        <h3>Preview:</h3>
+        <img id="qr-preview" src="" alt="QR will appear here" width="200">
+    </div>
+
+    <script>
+        function updateQR() {
+            const text = document.getElementById("qrInput").value;
+
+            if (text.trim() === "") {
+                document.getElementById("qr-preview").src = "";
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append("data", text);
+
+            fetch("/preview", {
+                method: "POST",
+                body: formData
+            })
+                .then(response => response.blob())
+                .then(blob => {
+                    const imgurl = URL.createObjectURL(blob);
+                    document.getElementById("qr-preview").src = imgurl;
+                })
+                .catch(err => console.log("Error:", err));
+        }
+    </script>
+
+</body>
+
+</html>
