@@ -1,64 +1,117 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html>
 <head>
     <title>QR Code Generator</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
     <style>
         body {
-            font-family: Arial;
-            text-align: center;
-            margin-top: 50px;
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #74ABE2, #5563DE);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            color: #fff;
         }
-
+        .container {
+            background: rgba(255,255,255,0.1);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+            text-align: center;
+            backdrop-filter: blur(10px);
+            animation: fadeIn 1s ease;
+        }
         input {
-            padding: 10px;
-            width: 400px;
+            width: 300px;
+            padding: 12px;
+            border-radius: 8px;
+            border: none;
+            margin-top: 10px;
             font-size: 16px;
         }
-
-        #preview-are {
-            margin-top: 30px;
+        button {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            background: coral;
+            color: #fff;
+            font-size: 16px;
+            margin-top: 15px;
+            cursor: pointer;
+            transition: 0.3s;
         }
-
+        button:hover {
+            background: #bd5302;
+            transform: translateY(-3px);
+        }
         #qr-preview {
             margin-top: 20px;
+            border: 5px solid #fff;
+            border-radius: 15px;
+            transition: transform 0.3s;
+        }
+        #qr-preview:hover {
+            transform: scale(1.05);
+        }
+        @keyframes fadeIn {
+            0% { opacity: 0; transform: translateY(-20px); }
+            100% { opacity: 1; transform: translateY(0); }
         }
     </style>
 </head>
-
 <body>
+
+<div class="container">
     <h1>QR Code Generator</h1>
-    <input type="text" id="qrInput" placeholder="Enter text or URL.." onkeyup="updateQR()">
-    <div id="preview-area">
-        <h3>Preview:</h3>
-        <img id="qr-preview" src="" alt="QR will appear here" width="200">
-    </div>
+    <input type="text" id="qrInput" placeholder="Enter text or URL" onkeyup="updateQR()">
+    <br>
+    <img id="qr-preview" src="" alt="QR preview" width="250">
+    <br>
+    <button onclick="downloadQR()">Download</button>
+</div>
 
-    <script>
-        function updateQR() {
-            const text = document.getElementById("qrInput").value;
+<script>
+function updateQR() {
+    const text = document.getElementById("qrInput").value;
+    if(text.trim() === "") {
+        document.getElementById("qr-preview").src = "";
+        return;
+    }
 
-            if (text.trim() === "") {
-                document.getElementById("qr-preview").src = "";
-                return;
-            }
+    const formData = new FormData();
+    formData.append("data", text);
 
-            const formData = new FormData();
-            formData.append("data", text);
+    fetch("/preview", { method: "POST", body: formData })
+        .then(response => response.blob())
+        .then(blob => {
+            const imgUrl = URL.createObjectURL(blob);
+            document.getElementById("qr-preview").src = imgUrl;
+        })
+        .catch(err => console.log(err));
+}
 
-            fetch("/preview", {
-                method: "POST",
-                body: formData
-            })
-                .then(response => response.blob())
-                .then(blob => {
-                    const imgurl = URL.createObjectURL(blob);
-                    document.getElementById("qr-preview").src = imgurl;
-                })
-                .catch(err => console.log("Error:", err));
-        }
-    </script>
+function downloadQR() {
+    const text = document.getElementById("qrInput").value;
+    if(text.trim() === "") return;
+
+    const formData = new FormData();
+    formData.append("data", text);
+
+    fetch("/download", { method: "POST", body: formData })
+        .then(response => response.blob())
+        .then(blob => {
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = "qr_code.png";
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+        });
+}
+</script>
 
 </body>
-
 </html>
