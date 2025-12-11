@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, send_file
 import qrcode
 from PIL import Image
 import io
+import os
 
 app = Flask(__name__)
 
@@ -42,8 +43,14 @@ def download():
     buffer = io.BytesIO()
     img.save(buffer, "PNG")
     buffer.seek(0)
-    return send_file(buffer, mimetype="image/png", as_attachment=True, download_name="qr_code.png")
+    return send_file(
+        buffer,
+        mimetype="image/png",
+        as_attachment=True,
+        download_name="qr_code.png"
+    )
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port)
