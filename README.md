@@ -1,41 +1,57 @@
 # QR Code Generator
 
-A single-screen QR code generator built with Flask. Choose a type,
-fill in the fields, and get a live QR preview you can download as PNG
-or SVG. Nothing is stored — each request is generated in memory.
+Turn a link, text, email, phone number, Wi-Fi network, or small image into a scannable QR code — live, in your browser.
 
-## Supported types
-- Website URL
-- Text
-- Email (with optional subject/body)
-- Phone number
-- Wi-Fi network (SSID, security, password)
-- Image (JPG/JPEG/PNG, embedded directly in the QR — see note below)
+## About the Project
 
-### About Image QR codes
-A QR code can't link to or store an external file — whatever it holds
-has to fit inside the code itself, and a standard QR code tops out at
-roughly 2–3KB of data. So "Image" mode base64-encodes the uploaded file
-into the QR content directly, which means it only works for very small
-images (icons, tiny thumbnails). Larger images are rejected with a clear
-error rather than silently failing.
+QR Code Generator is a lightweight, single-screen web app for creating QR codes without any clutter. Pick a content type, fill in the fields, and watch the QR code render instantly as you type. When it looks right, download it as a PNG or SVG. Everything is generated in memory on the server per request — nothing you enter is ever saved, logged, or stored in a database.
 
-## Project structure
-```
-api/index.py          Flask app: routes + QR/SVG rendering
-templates/index.html  Page markup
-static/css/style.css  Styles
-static/js/main.js     Type switching, live preview, downloads
-```
+## Features
 
-## Running locally
+- Live QR preview that updates as you type
+- 6 content types: Website URL, Text, Email, Phone, Wi-Fi, Image
+- Download as PNG or SVG
+- Copy the encoded content to your clipboard
+- Clear input validation with helpful error messages
+- No accounts, no database, no tracking — fully stateless
+- Clean, single-screen, distraction-free interface (light theme)
+
+## Tech Stack
+
+| Layer             | Technology                     |
+|-------------------|---------------------------------|
+| Backend            | Python, Flask                   |
+| QR generation      | `qrcode`, Pillow                 |
+| Vector export       | `qrcode.image.svg`              |
+| Frontend            | HTML, CSS, JavaScript (vanilla) |
+| Fonts               | Google Fonts (Inter)             |
+| Production server   | Gunicorn                          |
+| Hosting              | Vercel (serverless Python)       |
+
+## Local Setup
+
 ```bash
+# Clone the repo
+git clone <your-repo-url>
+cd py_qrcode
+
+# Install dependencies
 pip install -r requirements.txt
+
+# Run the app
 python api/index.py
 ```
-Then open http://127.0.0.1:5000.
 
-## Deploying
-- **Vercel:** `vercel.json` routes `/` to `api/index.py` and serves
-  `/static/*` directly.
-- **Heroku / any Procfile host:** `Procfile` runs `gunicorn api.index:app`.
+Then open **http://127.0.0.1:5000** in your browser.
+
+## Future Improvements
+
+1. Custom QR colors and logo/image embedding in the center of the code
+2. A vCard / contact-card QR type
+3. Batch QR generation from a CSV or list of entries
+4. Dark mode toggle
+5. Dynamic QR codes with optional scan-count tracking
+
+---
+
+*Built With ❤️ using Python and Flask*
