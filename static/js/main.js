@@ -170,7 +170,7 @@
         const body = await response.json();
         if (body.error) message = body.error;
       } catch (_) {
-        
+        /* ignore parse failure, use default message */
       }
       showError(message);
       return { ok: false };

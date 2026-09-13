@@ -23,6 +23,7 @@ def build_qr_image(data: str, image_factory=None):
 
 
 def resolve_payload():
+    """Return (content_string, None) on success, or (None, (json, status)) on failure."""
     upload = request.files.get("image")
 
     if upload and upload.filename:
