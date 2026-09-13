@@ -5,7 +5,7 @@ import qrcode
 
 app = Flask(__name__, template_folder="../templates", static_folder="../static")
 
-MAX_INPUT_LENGTH = 2000  # QR codes have a hard data ceiling; fail politely before that
+MAX_INPUT_LENGTH = 2000 
 
 
 def build_qr_png(data: str) -> io.BytesIO:

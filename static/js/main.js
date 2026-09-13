@@ -26,9 +26,8 @@
     placeholder.hidden = true;
     downloadBtn.disabled = false;
 
-    // One-shot "scan" sweep each time the code changes — motion tied to the user's own edit.
     sweep.classList.remove("is-active");
-    void sweep.offsetWidth; // restart the animation
+    void sweep.offsetWidth; 
     sweep.classList.add("is-active");
   }
 
